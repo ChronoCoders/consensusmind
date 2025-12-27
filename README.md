@@ -1,3 +1,18 @@
+cd C:\consensusmind
+del README.md
+```
+
+Then create a new file using a text editor, OR:
+
+**Alternative approach - Create README.md manually:**
+
+1. Open Notepad
+2. Copy the content I'll provide below
+3. Save as `README.md` in `C:\consensusmind`
+4. Make sure "Save as type" is "All Files" and encoding is "UTF-8"
+
+**Content for README.md:**
+```
 # ConsensusMind
 
 Autonomous AI researcher for blockchain consensus mechanisms.
@@ -64,108 +79,46 @@ Built in Rust for production reliability and performance.
 
 ## Installation
 
-```cmd
 git clone https://github.com/ChronoCoders/consensusmind.git
 cd consensusmind
 cargo build --release
-```
 
 ## Configuration
 
-Create `config.toml` in the project root:
+Create config.toml in the project root with LLM endpoint, API key, model settings, paths, agent parameters, and logging configuration.
 
-```toml
-[llm]
-endpoint = "http://localhost:8000/v1"
-api_key = ""
-model = "deepseek-r1"
-max_tokens = 4096
-temperature = 0.7
-
-[paths]
-papers = "data/papers"
-embeddings = "data/embeddings"
-experiments = "data/experiments"
-output = "output"
-
-[agent]
-max_iterations = 10
-timeout_seconds = 300
-
-[logging]
-level = "info"
-file = "consensusmind.log"
-```
-
-**Environment Variable Overrides:**
-- `LLM_ENDPOINT` - Override LLM endpoint URL
-- `LLM_API_KEY` - Override API key
-- `LLM_MODEL` - Override model name
-- `CONFIG_PATH` - Override config file path
+Environment variable overrides available:
+- LLM_ENDPOINT
+- LLM_API_KEY
+- LLM_MODEL
+- CONFIG_PATH
 
 ## Usage
 
-```cmd
-consensusmind
-```
+Run: consensusmind
 
 Currently initializes the system and validates configuration.
 
 ## Development
 
-**Build:**
-```cmd
-cargo build
-```
-
-**Test:**
-```cmd
-cargo test
-```
-
-**Quality Checks:**
-```cmd
-cargo fmt
-cargo clippy
-```
-
-**Release Build:**
-```cmd
-cargo build --release
-```
-
-## Project Structure
-
-```
-consensusmind/
-ÃÄÄ src/
-³   ÃÄÄ main.rs              # Entry point
-³   ÃÄÄ lib.rs               # Library root
-³   ÃÄÄ agent/               # Agent executor (planned)
-³   ÃÄÄ knowledge/           # Knowledge base (planned)
-³   ÃÄÄ consensus/           # Simulator (planned)
-³   ÃÄÄ llm/                 # LLM client
-³   ÃÄÄ output/              # Output generation (planned)
-³   ÀÄÄ utils/               # Config, logging
-ÃÄÄ tests/
-³   ÀÄÄ integration/         # Integration tests
-ÃÄÄ data/                    # Paper storage
-ÃÄÄ output/                  # Generated papers
-ÀÄÄ docs/                    # Documentation
-```
+Build: cargo build
+Test: cargo test
+Format: cargo fmt
+Lint: cargo clippy
+Release: cargo build --release
 
 ## Roadmap
 
-- [x] **Milestone 1:** Foundation & Infrastructure
-- [ ] **Milestone 2:** Knowledge Ingestion
-- [ ] **Milestone 3:** Knowledge Base
-- [ ] **Milestone 4:** Agent Core
-- [ ] **Milestone 5:** Consensus Simulator
-- [ ] **Milestone 6:** Hypothesis Generation
-- [ ] **Milestone 7:** Automated Experimentation
-- [ ] **Milestone 8:** Paper Generation
-- [ ] **Milestone 9:** Integration & Polish
-- [ ] **Milestone 10:** Whitepaper & Research Paper
+- [x] Milestone 1: Foundation & Infrastructure
+- [ ] Milestone 2: Knowledge Ingestion
+- [ ] Milestone 3: Knowledge Base
+- [ ] Milestone 4: Agent Core
+- [ ] Milestone 5: Consensus Simulator
+- [ ] Milestone 6: Hypothesis Generation
+- [ ] Milestone 7: Automated Experimentation
+- [ ] Milestone 8: Paper Generation
+- [ ] Milestone 9: Integration & Polish
+- [ ] Milestone 10: Whitepaper & Research Paper
 
 ## License
 
@@ -173,8 +126,7 @@ Apache 2.0 - See LICENSE file
 
 ## Contact
 
-**Distributed Systems Labs, LLC**
-
+Distributed Systems Labs, LLC
 - GitHub: https://github.com/ChronoCoders/consensusmind
 - Website: https://dslabs.network
 
