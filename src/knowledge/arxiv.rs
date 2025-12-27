@@ -45,7 +45,7 @@ impl ArxivClient {
 
         Ok(Self {
             client,
-            base_url: "http://export.arxiv.org/api/query".to_string(),
+            base_url: "https://export.arxiv.org/api/query".to_string(),
             rate_limit_delay: Duration::from_secs(3),
         })
     }
