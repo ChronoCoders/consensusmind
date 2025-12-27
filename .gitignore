@@ -1,0 +1,10 @@
+/target/
+Cargo.lock
+
+*.log
+*.tmp
+*.swp
+*~ 
+# Configuration with secrets 
+config.local.toml 
+.env 
