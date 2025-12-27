@@ -1,18 +1,3 @@
-cd C:\consensusmind
-del README.md
-```
-
-Then create a new file using a text editor, OR:
-
-**Alternative approach - Create README.md manually:**
-
-1. Open Notepad
-2. Copy the content I'll provide below
-3. Save as `README.md` in `C:\consensusmind`
-4. Make sure "Save as type" is "All Files" and encoding is "UTF-8"
-
-**Content for README.md:**
-```
 # ConsensusMind
 
 Autonomous AI researcher for blockchain consensus mechanisms.
