@@ -1,0 +1,131 @@
+use anyhow::Result;
+use backoff::{future::retry, ExponentialBackoff};
+use reqwest::Client;
+use serde::{Deserialize, Serialize};
+use std::time::Duration;
+use thiserror::Error;
+use tracing::{debug, warn};
+
+#[derive(Debug, Error)]
+pub enum LlmError {
+    #[error("HTTP request failed: {0}")]
+    RequestFailed(#[from] reqwest::Error),
+
+    #[error("API returned error: {0}")]
+    ApiError(String),
+
+    #[error("Deserialization failed: {0}")]
+    DeserializationFailed(String),
+
+    #[error("Timeout after {0} retries")]
+    Timeout(u32),
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct LlmRequest {
+    pub prompt: String,
+    pub max_tokens: u32,
+    pub temperature: f32,
+    pub stop: Option<Vec<String>>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+pub struct LlmResponse {
+    pub text: String,
+    pub finish_reason: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize)]
+struct VllmRequest {
+    prompt: String,
+    max_tokens: u32,
+    temperature: f32,
+    stop: Option<Vec<String>>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+struct VllmResponse {
+    text: Vec<String>,
+}
+
+pub struct LlmClient {
+    endpoint: String,
+    api_key: String,
+    model: String,
+    client: Client,
+}
+
+impl LlmClient {
+    pub fn new(endpoint: String, api_key: String, model: String) -> Result<Self> {
+        let client = Client::builder()
+            .timeout(Duration::from_secs(120))
+            .build()?;
+
+        Ok(Self {
+            endpoint,
+            api_key,
+            model,
+            client,
+        })
+    }
+
+    pub async fn generate(&self, request: LlmRequest) -> Result<LlmResponse, LlmError> {
+        let operation = || async { self.generate_once(request.clone()).await };
+
+        let backoff = ExponentialBackoff {
+            max_elapsed_time: Some(Duration::from_secs(300)),
+            ..Default::default()
+        };
+
+        retry(backoff, operation)
+            .await
+            .map_err(|_| LlmError::Timeout(5))
+    }
+
+    async fn generate_once(
+        &self,
+        request: LlmRequest,
+    ) -> Result<LlmResponse, backoff::Error<LlmError>> {
+        debug!("Sending request to LLM: {} tokens", request.max_tokens);
+
+        let vllm_request = VllmRequest {
+            prompt: request.prompt.clone(),
+            max_tokens: request.max_tokens,
+            temperature: request.temperature,
+            stop: request.stop.clone(),
+        };
+
+        let response = self
+            .client
+            .post(&self.endpoint)
+            .header("Authorization", format!("Bearer {}", self.api_key))
+            .json(&vllm_request)
+            .send()
+            .await
+            .map_err(|e| {
+                warn!("HTTP request failed: {}", e);
+                backoff::Error::transient(LlmError::RequestFailed(e))
+            })?;
+
+        if !response.status().is_success() {
+            let error_text = response
+                .text()
+                .await
+                .unwrap_or_else(|_| "Unknown error".to_string());
+            return Err(backoff::Error::permanent(LlmError::ApiError(error_text)));
+        }
+
+        let vllm_response: VllmResponse = response.json().await.map_err(|e| {
+            backoff::Error::permanent(LlmError::DeserializationFailed(e.to_string()))
+        })?;
+
+        let text = vllm_response.text.first().cloned().unwrap_or_default();
+
+        debug!("Received response: {} characters", text.len());
+
+        Ok(LlmResponse {
+            text,
+            finish_reason: None,
+        })
+    }
+}

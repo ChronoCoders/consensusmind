@@ -1,39 +1,40 @@
-[package]
-name = "consensusmind"
-version = "0.1.0"
-edition = "2021"
-authors = ["Distributed Systems Labs, LLC"]
-license = "Apache-2.0"
-description = "Autonomous AI researcher for blockchain consensus mechanisms"
-repository = "https://github.com/yourusername/consensusmind"
-keywords = ["blockchain", "consensus", "ai", "research", "agent"]
-categories = ["science"]
-
-[dependencies]
-tokio = { version = "1.42", features = ["full"] }
-reqwest = { version = "0.12", features = ["json", "rustls-tls"], default-features = false }
-serde = { version = "1.0", features = ["derive"] }
-serde_json = "1.0"
-toml = "0.8"
-anyhow = "1.0"
-thiserror = "2.0"
-tracing = "0.1"
-tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
-chrono = { version = "0.4", features = ["serde"] }
-
-[dev-dependencies]
-tokio-test = "0.4"
-
-[profile.release]
-opt-level = 3
-lto = true
-codegen-units = 1
-strip = true
-
-[[bin]]
-name = "consensusmind"
-path = "src/main.rs"
-
-[lib]
-name = "consensusmind"
-path = "src/lib.rs"
+[package] 
+name = "consensusmind" 
+version = "0.1.0" 
+edition = "2021" 
+authors = ["Distributed Systems Labs, LLC"] 
+license = "Apache-2.0" 
+description = "Autonomous AI researcher for blockchain consensus mechanisms" 
+repository = "https://github.com/ChronoCoders/consensusmind" 
+keywords = ["blockchain", "consensus", "ai", "research", "agent"] 
+categories = ["science"] 
+ 
+[dependencies] 
+tokio = { version = "1.42", features = ["full"] } 
+reqwest = { version = "0.12", features = ["json", "rustls-tls"], default-features = false } 
+serde = { version = "1.0", features = ["derive"] } 
+serde_json = "1.0" 
+toml = "0.8" 
+anyhow = "1.0" 
+thiserror = "2.0" 
+tracing = "0.1" 
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] } 
+chrono = { version = "0.4", features = ["serde"] } 
+backoff = { version = "0.4", features = ["tokio"] } 
+ 
+[dev-dependencies] 
+tokio-test = "0.4" 
+ 
+[profile.release] 
+opt-level = 3 
+lto = true 
+codegen-units = 1 
+strip = true 
+ 
+[[bin]] 
+name = "consensusmind" 
+path = "src/main.rs" 
+ 
+[lib] 
+name = "consensusmind" 
+path = "src/lib.rs" 
