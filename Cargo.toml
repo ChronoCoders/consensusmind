@@ -23,6 +23,7 @@ chrono = { version = "0.4", features = ["serde"] }
 backoff = { version = "0.4", features = ["tokio"] }
 quick-xml = { version = "0.37", features = ["serialize"] }
 urlencoding = "2.1"
+pdf-extract = "0.7"
 
 [dev-dependencies]
 tokio-test = "0.4"
