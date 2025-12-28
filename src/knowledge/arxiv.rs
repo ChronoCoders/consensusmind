@@ -4,6 +4,8 @@ use quick_xml::events::Event;
 use quick_xml::Reader;
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
+use std::fs;
+use std::path::Path;
 use std::time::Duration;
 use thiserror::Error;
 use tokio::time::sleep;
@@ -19,6 +21,12 @@ pub enum ArxivError {
 
     #[error("Rate limit exceeded")]
     RateLimitExceeded,
+
+    #[error("IO error: {0}")]
+    IoError(#[from] std::io::Error),
+
+    #[error("Download failed: {0}")]
+    DownloadFailed(String),
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -88,6 +96,52 @@ impl ArxivClient {
         sleep(self.rate_limit_delay).await;
 
         Ok(papers)
+    }
+
+    pub async fn download_pdf(
+        &self,
+        paper: &ArxivPaper,
+        output_dir: &Path,
+    ) -> Result<String, ArxivError> {
+        fs::create_dir_all(output_dir)?;
+
+        let arxiv_id = paper.id.split('/').next_back().unwrap_or(&paper.id);
+        let filename = format!("{}.pdf", arxiv_id.replace(':', "_"));
+        let filepath = output_dir.join(&filename);
+
+        if filepath.exists() {
+            info!("PDF already exists: {}", filepath.display());
+            return Ok(filepath.to_string_lossy().to_string());
+        }
+
+        info!(
+            "Downloading PDF: {} -> {}",
+            paper.pdf_url,
+            filepath.display()
+        );
+
+        let response = self.client.get(&paper.pdf_url).send().await?;
+
+        if !response.status().is_success() {
+            return Err(ArxivError::DownloadFailed(format!(
+                "HTTP {}: {}",
+                response.status(),
+                paper.pdf_url
+            )));
+        }
+
+        let bytes = response.bytes().await?;
+        fs::write(&filepath, bytes)?;
+
+        info!(
+            "Downloaded PDF: {} ({} bytes)",
+            filepath.display(),
+            fs::metadata(&filepath)?.len()
+        );
+
+        sleep(self.rate_limit_delay).await;
+
+        Ok(filepath.to_string_lossy().to_string())
     }
 
     fn parse_response(&self, xml: &str) -> Result<Vec<ArxivPaper>, ArxivError> {

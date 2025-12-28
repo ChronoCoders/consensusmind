@@ -2,6 +2,7 @@ use anyhow::Result;
 use consensusmind::knowledge::arxiv::ArxivClient;
 use consensusmind::llm::{LlmClient, LlmRequest};
 use consensusmind::utils::config::Config;
+use std::path::PathBuf;
 
 #[tokio::test]
 async fn test_config_loads() -> Result<()> {
@@ -14,11 +15,7 @@ async fn test_config_loads() -> Result<()> {
 #[tokio::test]
 async fn test_llm_client_creation() -> Result<()> {
     let config = Config::load()?;
-    let _client = LlmClient::new(
-        config.llm.endpoint,
-        config.llm.api_key,
-        config.llm.model,
-    )?;
+    let _client = LlmClient::new(config.llm.endpoint, config.llm.api_key, config.llm.model)?;
     Ok(())
 }
 
@@ -57,6 +54,31 @@ async fn test_arxiv_search_consensus() -> Result<()> {
         assert!(!paper.title.is_empty(), "Paper title should not be empty");
         assert!(!paper.pdf_url.is_empty(), "PDF URL should not be empty");
     }
+
+    Ok(())
+}
+
+#[tokio::test]
+#[ignore]
+async fn test_arxiv_download_pdf() -> Result<()> {
+    let client = ArxivClient::new()?;
+    let papers = client
+        .search("blockchain consensus", 1, 0)
+        .await
+        .expect("Search failed");
+
+    assert!(!papers.is_empty(), "Should find at least one paper");
+
+    let paper = &papers[0];
+    let output_dir = PathBuf::from("data/papers");
+
+    let filepath = client
+        .download_pdf(paper, &output_dir)
+        .await
+        .expect("Download failed");
+
+    assert!(!filepath.is_empty(), "Filepath should not be empty");
+    assert!(PathBuf::from(&filepath).exists(), "PDF file should exist");
 
     Ok(())
 }
