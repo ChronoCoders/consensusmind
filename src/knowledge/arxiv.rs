@@ -11,6 +11,8 @@ use thiserror::Error;
 use tokio::time::sleep;
 use tracing::{debug, info, warn};
 
+use crate::knowledge::database::{MetadataStore, PaperMetadata};
+
 #[derive(Debug, Error)]
 pub enum ArxivError {
     #[error("HTTP request failed: {0}")]
@@ -27,6 +29,9 @@ pub enum ArxivError {
 
     #[error("Download failed: {0}")]
     DownloadFailed(String),
+
+    #[error("Metadata error: {0}")]
+    MetadataError(#[from] anyhow::Error),
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -102,6 +107,7 @@ impl ArxivClient {
         &self,
         paper: &ArxivPaper,
         output_dir: &Path,
+        metadata_store: Option<&mut MetadataStore>,
     ) -> Result<String, ArxivError> {
         fs::create_dir_all(output_dir)?;
 
@@ -131,17 +137,41 @@ impl ArxivClient {
         }
 
         let bytes = response.bytes().await?;
-        fs::write(&filepath, bytes)?;
+        fs::write(&filepath, &bytes)?;
+
+        let file_size = bytes.len() as u64;
+        let filepath_str = filepath.to_string_lossy().to_string();
 
         info!(
             "Downloaded PDF: {} ({} bytes)",
             filepath.display(),
-            fs::metadata(&filepath)?.len()
+            file_size
         );
+
+        if let Some(store) = metadata_store {
+            store.mark_downloaded(arxiv_id, &filepath_str, file_size)?;
+        }
 
         sleep(self.rate_limit_delay).await;
 
-        Ok(filepath.to_string_lossy().to_string())
+        Ok(filepath_str)
+    }
+
+    pub async fn search_and_store(
+        &self,
+        query: &str,
+        max_results: usize,
+        start: usize,
+        metadata_store: &mut MetadataStore,
+    ) -> Result<Vec<ArxivPaper>, ArxivError> {
+        let papers = self.search(query, max_results, start).await?;
+
+        for paper in &papers {
+            let metadata: PaperMetadata = paper.clone().into();
+            metadata_store.add_paper(metadata)?;
+        }
+
+        Ok(papers)
     }
 
     fn parse_response(&self, xml: &str) -> Result<Vec<ArxivPaper>, ArxivError> {
