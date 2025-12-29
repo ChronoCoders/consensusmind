@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ConsensusMind | Autonomous AI Researcher for Blockchain Consensus</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Courier New', Courier, monospace; background: #ffffff; color: #222226; line-height: 1.6; }
+        body.dark-theme { background: #29292e; color: rgba(255, 255, 255, 0.8); }
+        .container { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+        header { border-bottom: 1px solid rgba(34, 34, 38, 0.1); padding: 20px 0; }
+        body.dark-theme header { border-bottom-color: rgba(255, 255, 255, 0.1); }
+        .header-content { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px; }
+        .logo { font-size: 20px; font-weight: 700; color: #222226; text-decoration: none; }
+        body.dark-theme .logo { color: rgba(255, 255, 255, 0.8); }
+        nav { display: flex; gap: 32px; align-items: center; }
+        nav a { color: #222226; text-decoration: none; font-size: 16px; }
+        body.dark-theme nav a { color: rgba(255, 255, 255, 0.8); }
+        nav a:hover { color: #449cf8; }
+        .auth-buttons { display: flex; gap: 12px; align-items: center; margin-left: 16px; }
+        .btn-login { padding: 8px 20px; font-size: 14px; background: transparent; border: 1px solid #222226; color: #222226; text-decoration: none; display: inline-block; }
+        body.dark-theme .btn-login { border-color: rgba(255, 255, 255, 0.8); color: rgba(255, 255, 255, 0.8); }
+        .btn-login:hover { background: rgba(68, 156, 248, 0.1); }
+        .btn-signup { padding: 8px 20px; font-size: 14px; background: #449cf8; color: #ffffff; text-decoration: none; display: inline-block; font-weight: 700; }
+        .btn-signup:hover { opacity: 0.9; }
+        .theme-toggle { cursor: pointer; background: none; border: none; padding: 8px; }
+        .theme-toggle svg { width: 24px; height: 24px; fill: #222226; stroke: #222226; stroke-width: 2; }
+        body.dark-theme .theme-toggle svg { fill: rgba(255, 255, 255, 0.8); stroke: rgba(255, 255, 255, 0.8); }
+        .hero { padding: 80px 0; }
+        .hero-flex { display: flex; gap: 60px; align-items: center; }
+        .hero-content { flex: 1; }
+        .hero-content h1 { font-size: 48px; font-weight: 700; line-height: 1.2; margin-bottom: 24px; color: #000000; }
+        body.dark-theme .hero-content h1 { color: #ffffff; }
+        .hero-content p { font-size: 20px; line-height: 1.8; margin-bottom: 32px; max-width: 600px; color: #222226; }
+        body.dark-theme .hero-content p { color: rgba(255, 255, 255, 0.8); }
+        .hero-image { flex: 1; text-align: center; }
+        .cta { display: inline-block; padding: 14px 28px; font-size: 18px; font-weight: 700; text-decoration: none; background: #f2f2f2; color: #449cf8; }
+        body.dark-theme .cta { background: rgba(255, 255, 255, 0.1); }
+        .cta:hover { opacity: 0.8; }
+        .cta-primary { background: #449cf8; color: #ffffff; }
+        .cta-group { display: flex; gap: 16px; flex-wrap: wrap; }
+        .features { padding: 80px 0; }
+        .section-title { font-size: 32px; font-weight: 700; margin-bottom: 48px; text-align: center; color: #000000; }
+        body.dark-theme .section-title { color: #ffffff; }
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; }
+        .feature { position: relative; padding-top: 24px; }
+        .feature::before { content: ''; position: absolute; top: 0; left: 0; width: 75px; height: 1px; background: #449cf8; }
+        .feature h3 { font-size: 20px; font-weight: 500; margin-bottom: 12px; color: #000000; }
+        body.dark-theme .feature h3 { color: #ffffff; }
+        .feature p { font-size: 16px; line-height: 1.75; color: #222226; }
+        body.dark-theme .feature p { color: rgba(255, 255, 255, 0.8); }
+        .two-column { padding: 80px 0; background: #f2f2f2; }
+        body.dark-theme .two-column { background: #1b1b20; }
+        .two-column-content { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; }
+        .column h3 { font-size: 24px; font-weight: 700; margin-bottom: 20px; color: #000000; }
+        body.dark-theme .column h3 { color: #ffffff; }
+        .column ul { list-style: none; padding-left: 28px; }
+        .column li { position: relative; margin-bottom: 16px; line-height: 1.75; color: #222226; }
+        body.dark-theme .column li { color: rgba(255, 255, 255, 0.8); }
+        .column li::before { content: ''; position: absolute; left: -28px; top: 8px; width: 10px; height: 10px; background: #449cf8; border-radius: 50%; }
+        .tech-stack { padding: 80px 0; }
+        .tech-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px; }
+        .tech-item { padding: 24px; background: #f2f2f2; text-align: center; }
+        body.dark-theme .tech-item { background: #1b1b20; }
+        .tech-item h4 { font-size: 18px; font-weight: 500; margin-bottom: 8px; color: #000000; }
+        body.dark-theme .tech-item h4 { color: #ffffff; }
+        .tech-item p { font-size: 14px; opacity: 0.7; color: #222226; }
+        body.dark-theme .tech-item p { color: rgba(255, 255, 255, 0.8); }
+        .status-section { padding: 80px 0; background: #f2f2f2; }
+        body.dark-theme .status-section { background: #1b1b20; }
+        .pricing { padding: 80px 0; }
+        .pricing-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 32px; margin-top: 60px; max-width: 900px; margin-left: auto; margin-right: auto; }
+        .pricing-card { background: #f2f2f2; padding: 40px; border: 2px solid transparent; }
+        body.dark-theme .pricing-card { background: #1b1b20; }
+        .pricing-card.featured { border-color: #449cf8; background: #ffffff; }
+        body.dark-theme .pricing-card.featured { background: #29292e; }
+        .pricing-card h3 { font-size: 24px; font-weight: 700; margin-bottom: 12px; color: #000000; }
+        body.dark-theme .pricing-card h3 { color: #ffffff; }
+        .pricing-card .price { font-size: 40px; font-weight: 700; margin: 20px 0; color: #000000; }
+        body.dark-theme .pricing-card .price { color: #ffffff; }
+        .pricing-card .price-term { font-size: 16px; opacity: 0.6; }
+        .pricing-card ul { list-style: none; margin: 24px 0; }
+        .pricing-card li { margin-bottom: 12px; padding-left: 24px; position: relative; color: #222226; }
+        body.dark-theme .pricing-card li { color: rgba(255, 255, 255, 0.8); }
+        .pricing-card li::before { content: '✓'; position: absolute; left: 0; color: #449cf8; font-weight: 700; }
+        .pricing-card .cta { width: 100%; text-align: center; margin-top: 24px; }
+        .waitlist-section { background: #f2f2f2; padding: 80px 0; }
+        body.dark-theme .waitlist-section { background: #1b1b20; }
+        .waitlist-form { max-width: 500px; margin: 0 auto; display: flex; gap: 12px; }
+        .waitlist-form input { flex: 1; padding: 14px 20px; font-size: 16px; border: 1px solid #ccc; font-family: 'Courier New', monospace; background: #fff; color: #222226; }
+        body.dark-theme .waitlist-form input { background: #29292e; border-color: rgba(255,255,255,0.2); color: #fff; }
+        .waitlist-form button { white-space: nowrap; }
+        .waitlist-intro { text-align: center; max-width: 600px; margin: 0 auto 40px; font-size: 18px; color: #222226; }
+        body.dark-theme .waitlist-intro { color: rgba(255, 255, 255, 0.8); }
+        footer { background: #222226; color: #ffffff; padding: 60px 0; }
+        body.dark-theme footer { background: #1b1b20; }
+        .footer-content { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; }
+        .footer-column h4 { font-size: 18px; margin-bottom: 16px; color: #ffffff; }
+        .footer-column ul { list-style: none; }
+        .footer-column li { margin-bottom: 12px; }
+        .footer-column a { color: rgba(255, 255, 255, 0.8); text-decoration: none; }
+        .footer-column a:hover { color: #449cf8; }
+        .footer-bottom { margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(255, 255, 255, 0.2); text-align: center; font-size: 14px; opacity: 0.6; }
+        @media (max-width: 1024px) {
+            .pricing-grid { grid-template-columns: 1fr; max-width: 500px; }
+        }
+        @media (max-width: 768px) {
+            .hero-flex { flex-direction: column; }
+            .hero { padding: 40px 0; }
+            .hero-content h1 { font-size: 32px; }
+            nav { display: none; }
+            .two-column-content { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body class="light-theme">
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">ConsensusMind</a>
+                <nav>
+                    <a href="#research">Research</a>
+                    <a href="#features">Features</a>
+                    <a href="#pricing">Pricing</a>
+                    <a href="https://github.com/ChronoCoders/consensusmind">GitHub</a>
+                    <div class="auth-buttons">
+                        <a href="login.html" class="btn-login">Login</a>
+                        <a href="signup.html" class="btn-signup">Sign Up Free</a>
+                    </div>
+                    <button class="theme-toggle" id="theme-toggle">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <circle cx="12" cy="12" r="5"/>
+                            <line x1="12" y1="1" x2="12" y2="3"/>
+                            <line x1="12" y1="21" x2="12" y2="23"/>
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                            <line x1="1" y1="12" x2="3" y2="12"/>
+                            <line x1="21" y1="12" x2="23" y2="12"/>
+                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                        </svg>
+                    </button>
+                </nav>
+            </div>
+        </div>
+    </header>
+    <main>
+        <section class="hero">
+            <div class="container">
+                <div class="hero-flex">
+                    <div class="hero-content">
+                        <h1>Autonomous AI Researcher for Blockchain Consensus</h1>
+                        <p>ConsensusMind systematically explores novel blockchain consensus mechanisms through autonomous literature review, protocol analysis, and research synthesis. Production-grade Rust implementation with zero compromises.</p>
+                        <div class="cta-group">
+                            <a href="https://github.com/ChronoCoders/consensusmind" class="cta cta-primary">Start Free (Open Source)</a>
+                            <a href="#pricing" class="cta">View Pricing</a>
+                        </div>
+                    </div>
+                    <div class="hero-image">
+                        <svg width="400" height="400" viewBox="0 0 400 400" style="max-width:100%">
+                            <circle cx="200" cy="200" r="60" fill="#449cf8" opacity="0.2"/>
+                            <circle cx="100" cy="100" r="30" fill="#449cf8" opacity="0.6"/>
+                            <circle cx="300" cy="100" r="30" fill="#449cf8" opacity="0.6"/>
+                            <circle cx="100" cy="300" r="30" fill="#449cf8" opacity="0.6"/>
+                            <circle cx="300" cy="300" r="30" fill="#449cf8" opacity="0.6"/>
+                            <line x1="100" y1="100" x2="200" y2="200" stroke="#449cf8" stroke-width="2" opacity="0.4"/>
+                            <line x1="300" y1="100" x2="200" y2="200" stroke="#449cf8" stroke-width="2" opacity="0.4"/>
+                            <line x1="100" y1="300" x2="200" y2="200" stroke="#449cf8" stroke-width="2" opacity="0.4"/>
+                            <line x1="300" y1="300" x2="200" y2="200" stroke="#449cf8" stroke-width="2" opacity="0.4"/>
+                            <circle cx="200" cy="200" r="20" fill="#449cf8"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="features" class="features">
+            <div class="container">
+                <h2 class="section-title">Core Capabilities</h2>
+                <div class="features-grid">
+                    <div class="feature"><h3>Autonomous Literature Review</h3><p>Automatically searches arXiv and academic databases with semantic search. Full PDF text extraction and metadata tracking for comprehensive knowledge base.</p></div>
+                    <div class="feature"><h3>Protocol Implementation</h3><p>Real consensus protocol implementations in Rust. Network simulation with Byzantine fault injection and production-grade testing framework.</p></div>
+                    <div class="feature"><h3>Research Synthesis</h3><p>LLM-powered analysis generates structured research reports with proper citations, methodology, and experimental validation.</p></div>
+                    <div class="feature"><h3>Hypothesis Generation</h3><p>Proposes novel consensus mechanism variations through systematic analysis of existing protocols and automated parameter exploration.</p></div>
+                    <div class="feature"><h3>LaTeX Paper Generation</h3><p>Automated academic paper generation with BibTeX citations, figures, tables, and experimental results ready for submission.</p></div>
+                    <div class="feature"><h3>Production Quality</h3><p>Zero compiler warnings. Zero dead code. Comprehensive testing. Built for reliability, not prototypes.</p></div>
+                </div>
+            </div>
+        </section>
+        <section class="two-column" id="research">
+            <div class="container">
+                <div class="two-column-content">
+                    <div class="column">
+                        <h3>Research Focus Areas</h3>
+                        <ul>
+                            <li>Byzantine Fault Tolerant consensus protocols</li>
+                            <li>Proof-of-X mechanism variants and hybrids</li>
+                            <li>Finality guarantees and probabilistic settlement</li>
+                            <li>Network partition recovery strategies</li>
+                            <li>Scalability vs. decentralization trade-offs</li>
+                            <li>Energy efficiency in consensus design</li>
+                            <li>Attack vector analysis and mitigation</li>
+                        </ul>
+                    </div>
+                    <div class="column">
+                        <h3>Research Methodology</h3>
+                        <ul>
+                            <li>Systematic literature search via arXiv API</li>
+                            <li>Automated protocol specification extraction</li>
+                            <li>Vector embeddings for semantic similarity</li>
+                            <li>Simulation-based validation with metrics</li>
+                            <li>Formal verification of security properties</li>
+                            <li>Open source peer review via GitHub</li>
+                            <li>Reproducible research artifacts</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="architecture" class="tech-stack">
+            <div class="container">
+                <h2 class="section-title">Technical Architecture</h2>
+                <div class="tech-grid">
+                    <div class="tech-item"><h4>Rust 2021</h4><p>Production-grade core</p></div>
+                    <div class="tech-item"><h4>Self-hosted vLLM</h4><p>LLM reasoning layer</p></div>
+                    <div class="tech-item"><h4>arXiv API</h4><p>Academic paper search</p></div>
+                    <div class="tech-item"><h4>SQLite + Vector DB</h4><p>Knowledge storage</p></div>
+                    <div class="tech-item"><h4>Tokio Async</h4><p>Async runtime</p></div>
+                    <div class="tech-item"><h4>LaTeX</h4><p>Paper generation</p></div>
+                    <div class="tech-item"><h4>PDF Extract</h4><p>Text extraction</p></div>
+                    <div class="tech-item"><h4>Reqwest + Rustls</h4><p>HTTPS client</p></div>
+                </div>
+            </div>
+        </section>
+        <section class="status-section">
+            <div class="container">
+                <h2 class="section-title">Project Status</h2>
+                <div class="features-grid">
+                    <div class="feature"><h3>Current Version</h3><p>v0.2.0 - Milestone 2 Complete. arXiv integration operational. PDF download and text extraction working. Metadata tracking implemented.</p></div>
+                    <div class="feature"><h3>Active Development</h3><p>Milestone 3 in progress: Vector embeddings and semantic search over paper corpus. Daily development sessions ongoing.</p></div>
+                    <div class="feature"><h3>Roadmap</h3><p>10 milestones total. 2 complete, 8 remaining. Target completion: Q1 2026. Research paper for ORCID submission planned.</p></div>
+                </div>
+            </div>
+        </section>
+        <section id="pricing" class="pricing">
+            <div class="container">
+                <h2 class="section-title">Pricing</h2>
+                <div class="pricing-grid">
+                    <div class="pricing-card">
+                        <h3>Open Source</h3>
+                        <div class="price">$0<span class="price-term">/forever</span></div>
+                        <ul>
+                            <li>Full source code access</li>
+                            <li>Self-hosted deployment</li>
+                            <li>All features unlocked</li>
+                            <li>Community support</li>
+                            <li>Apache 2.0 license</li>
+                        </ul>
+                        <a href="https://github.com/ChronoCoders/consensusmind" class="cta cta-primary">Get Started</a>
+                    </div>
+                    <div class="pricing-card">
+                        <h3>Researcher</h3>
+                        <div class="price">$0<span class="price-term">/month</span></div>
+                        <ul>
+                            <li>Managed cloud hosting</li>
+                            <li>10 papers/month analysis</li>
+                            <li>5 PDF downloads/month</li>
+                            <li>Community support</li>
+                            <li>Email verification required</li>
+                        </ul>
+                        <a href="signup.html" class="cta">Sign Up Free</a>
+                    </div>
+                    <div class="pricing-card">
+                        <h3>Starter</h3>
+                        <div class="price">$49<span class="price-term">/month</span></div>
+                        <ul>
+                            <li>Everything in Researcher</li>
+                            <li>50 papers/month analysis</li>
+                            <li>10 PDF downloads/month</li>
+                            <li>Email support</li>
+                            <li>7-day free trial</li>
+                        </ul>
+                        <a href="#waitlist" class="cta">Join Waitlist</a>
+                    </div>
+                    <div class="pricing-card featured">
+                        <h3>Professional</h3>
+                        <div class="price">$149<span class="price-term">/month</span></div>
+                        <ul>
+                            <li>Everything in Starter</li>
+                            <li>500 papers/month analysis</li>
+                            <li>100 PDF downloads/month</li>
+                            <li>Vector search enabled</li>
+                            <li>Priority support</li>
+                            <li>14-day free trial</li>
+                        </ul>
+                        <a href="#waitlist" class="cta cta-primary">Join Waitlist</a>
+                    </div>
+                    <div class="pricing-card">
+                        <h3>Enterprise</h3>
+                        <div class="price">Custom</div>
+                        <ul>
+                            <li>Unlimited usage</li>
+                            <li>Dedicated deployment</li>
+                            <li>Custom LLM models</li>
+                            <li>White-label option</li>
+                            <li>SLA guarantees</li>
+                            <li>Consulting included</li>
+                        </ul>
+                        <a href="mailto:enterprise@dslabs.network" class="cta">Request Demo</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="two-column">
+            <div class="container">
+                <div class="two-column-content">
+                    <div class="column">
+                        <h3>Research Consulting</h3>
+                        <ul>
+                            <li>Custom consensus protocol design</li>
+                            <li>Security audits of existing protocols</li>
+                            <li>Academic paper co-authoring</li>
+                            <li>Protocol implementation review</li>
+                            <li>Training workshops for research teams</li>
+                            <li>Long-term research partnerships</li>
+                        </ul>
+                    </div>
+                    <div class="column">
+                        <h3>API Access</h3>
+                        <ul>
+                            <li>$0.10 per paper analyzed</li>
+                            <li>$0.05 per PDF download</li>
+                            <li>$0.50 per research synthesis</li>
+                            <li>$2.00 per protocol simulation run</li>
+                            <li>Pay-as-you-go billing</li>
+                            <li>REST API with authentication</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="waitlist" class="waitlist-section">
+            <div class="container">
+                <h2 class="section-title">Coming Soon - Join the Waitlist</h2>
+                <p class="waitlist-intro">ConsensusMind Cloud launches Q1 2026. Sign up for early access, exclusive founder pricing, and be the first to experience autonomous blockchain research.</p>
+                <form class="waitlist-form" action="#" method="POST">
+                    <input type="email" name="email" placeholder="Enter your email" required>
+                    <button type="submit" class="cta cta-primary">Join Waitlist</button>
+                </form>
+                <p style="text-align: center; margin-top: 32px; font-size: 14px; opacity: 0.7;">Early access includes: GitHub OAuth, Google Sign-In, and Email authentication</p>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h4>Project</h4>
+                    <ul>
+                        <li><a href="https://github.com/ChronoCoders/consensusmind">GitHub Repository</a></li>
+                        <li><a href="https://github.com/ChronoCoders/consensusmind/releases">Releases</a></li>
+                        <li><a href="https://github.com/ChronoCoders/consensusmind/issues">Issue Tracker</a></li>
+                        <li><a href="https://github.com/ChronoCoders/consensusmind/blob/main/SECURITY.md">Security Policy</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="https://github.com/ChronoCoders/consensusmind/blob/main/README.md">Documentation</a></li>
+                        <li><a href="#research">Research Methodology</a></li>
+                        <li><a href="#architecture">Architecture</a></li>
+                        <li><a href="https://dslabs.network">DSLabs Website</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="#pricing">Pricing</a></li>
+                        <li><a href="mailto:hello@dslabs.network">Contact</a></li>
+                        <li><a href="mailto:hello@dslabs.network?subject=API Access">API Access</a></li>
+                        <li><a href="mailto:enterprise@dslabs.network">Enterprise</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="https://dslabs.network">Distributed Systems Labs</a></li>
+                        <li><a href="mailto:hello@dslabs.network">Contact</a></li>
+                        <li><a href="https://github.com/ChronoCoders">GitHub Org</a></li>
+                        <li><a href="https://github.com/ChronoCoders/consensusmind/blob/main/LICENSE">Apache 2.0 License</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Distributed Systems Labs, LLC. Open source under Apache 2.0 License.</p>
+            </div>
+        </div>
+    </footer>
+    <script>
+        const btn = document.getElementById('theme-toggle');
+        const body = document.body;
+        const saved = localStorage.getItem('theme') || 'light-theme';
+        body.className = saved;
+        btn.addEventListener('click', () => {
+            const newTheme = body.classList.contains('dark-theme') ? 'light-theme' : 'dark-theme';
+            body.className = newTheme;
+            localStorage.setItem('theme', newTheme);
+        });
+    </script>
+</body>
+</html>
