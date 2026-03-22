@@ -21,6 +21,8 @@ Thumbs.db
 
 /data/papers/*.pdf
 /data/embeddings/*.bin
+/data/embeddings/*.json
+/data/*.json
 /data/experiments/*
 !/data/papers/.gitkeep
 !/data/embeddings/.gitkeep

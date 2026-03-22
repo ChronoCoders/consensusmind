@@ -21,3 +21,6 @@ file = "consensusmind.log"
 
 [knowledge]
 max_pdf_bytes = 104857600
+metadata_file = "data/metadata.json"
+embedding_dims = 512
+index_file = "data/embeddings/index.json"

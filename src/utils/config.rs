@@ -55,13 +55,23 @@ pub struct LoggingConfig {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct KnowledgeConfig {
+    #[serde(default = "default_metadata_file")]
+    pub metadata_file: PathBuf,
+    #[serde(default = "default_max_pdf_bytes")]
     pub max_pdf_bytes: u64,
+    #[serde(default = "default_embedding_dims")]
+    pub embedding_dims: usize,
+    #[serde(default = "default_index_file")]
+    pub index_file: PathBuf,
 }
 
 impl Default for KnowledgeConfig {
     fn default() -> Self {
         Self {
-            max_pdf_bytes: 100 * 1024 * 1024,
+            metadata_file: default_metadata_file(),
+            max_pdf_bytes: default_max_pdf_bytes(),
+            embedding_dims: default_embedding_dims(),
+            index_file: default_index_file(),
         }
     }
 }
@@ -107,4 +117,20 @@ fn is_local_http_endpoint(endpoint: &str) -> bool {
     endpoint.starts_with("http://localhost")
         || endpoint.starts_with("http://127.0.0.1")
         || endpoint.starts_with("http://[::1]")
+}
+
+fn default_metadata_file() -> PathBuf {
+    PathBuf::from("data/metadata.json")
+}
+
+fn default_embedding_dims() -> usize {
+    512
+}
+
+fn default_index_file() -> PathBuf {
+    PathBuf::from("data/embeddings/index.json")
+}
+
+fn default_max_pdf_bytes() -> u64 {
+    100 * 1024 * 1024
 }

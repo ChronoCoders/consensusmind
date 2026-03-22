@@ -87,13 +87,20 @@ cargo build --release
 
 ## Configuration
 
-Create config.toml in the project root with LLM endpoint, API key, model settings, paths, agent parameters, and logging configuration.
+Create `config.toml` in the project root with LLM endpoint, model settings, paths, agent parameters, and logging configuration.
+
+For secrets (like API keys), use either:
+- Environment variables (recommended), or
+- `config.local.toml` (kept out of git via `.gitignore`)
 
 Environment variable overrides available:
 - LLM_ENDPOINT
 - LLM_API_KEY
 - LLM_MODEL
 - CONFIG_PATH
+
+Additional settings:
+- `knowledge.max_pdf_bytes` controls the maximum allowed PDF download size.
 
 ## Usage
 ```bash
@@ -110,6 +117,8 @@ cargo fmt            # Format code
 cargo clippy         # Lint
 cargo build --release # Build optimized
 ```
+
+CI runs `cargo fmt --check`, `cargo clippy -- -D warnings`, and `cargo test` on push/PR, plus scheduled dependency/security checks.
 
 ## Roadmap
 
