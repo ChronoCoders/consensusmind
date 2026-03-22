@@ -8,13 +8,41 @@ use consensusmind::knowledge::embedding::{
     build_or_update_index_from_metadata, HashingEmbedder, VectorIndex,
 };
 use consensusmind::knowledge::paper_parser::PdfParser;
-use consensusmind::llm::LlmClient;
 use consensusmind::utils::{config::Config, logger};
 use tracing::info;
+
+fn print_usage() {
+    println!("ConsensusMind");
+    println!();
+    println!("Usage:");
+    println!("  consensusmind run \"<query>\"");
+    println!("  consensusmind hypothesize \"<query>\"");
+    println!("  consensusmind experiment <hypothesis-id> [--seeds N] [--ticks T] [--nodes N]");
+    println!("  consensusmind paper <hypothesis-id>");
+    println!("  consensusmind index");
+    println!("  consensusmind semantic-search \"<query>\" [top_k]");
+    println!("  consensusmind simulate [rounds] [leader_failure_prob] [seed]");
+    println!("  consensusmind raft-simulate [nodes] [ticks] [seed]");
+    println!("  consensusmind help");
+    println!("  consensusmind --version");
+}
 
 #[tokio::main]
 async fn main() -> Result<()> {
     let args: Vec<String> = std::env::args().collect();
+
+    if args.get(1).map(|s| s.as_str()) == Some("--version") {
+        println!("consensusmind {}", env!("CARGO_PKG_VERSION"));
+        return Ok(());
+    }
+    if matches!(
+        args.get(1).map(|s| s.as_str()),
+        None | Some("help") | Some("--help") | Some("-h")
+    ) {
+        print_usage();
+        return Ok(());
+    }
+
     let config = Config::load()?;
 
     logger::init_with_file(&config.logging.file, &config.logging.level)?;
@@ -216,17 +244,9 @@ async fn main() -> Result<()> {
             );
             return Ok(());
         }
-        _ => {}
+        _ => {
+            print_usage();
+            return Ok(());
+        }
     }
-
-    let _client = LlmClient::new(
-        config.llm.endpoint.clone(),
-        config.llm.api_key.clone(),
-        config.llm.model.clone(),
-    )?;
-
-    info!("LLM client initialized successfully");
-    info!("System ready");
-
-    Ok(())
 }

@@ -8,7 +8,7 @@ ConsensusMind is an autonomous research agent that conducts end-to-end research 
 
 ## Status
 
-**Current Version:** 0.8.0 - Milestone 8 Complete
+**Current Version:** 0.9.0 - Milestone 9 Complete
 
 ### Completed Milestones
 
@@ -50,9 +50,13 @@ ConsensusMind is an autonomous research agent that conducts end-to-end research 
 #### Milestone 8: Paper Generation
 - LaTeX paper generation from hypotheses and experiment results
 
+#### Milestone 9: Integration & Polish
+- Unified CLI entrypoints (help/version and command usage)
+- Repo structure improvements for outputs and data directories
+
 ## Features
 
-### Current (v0.8.0)
+### Current (v0.9.0)
 - Configuration management from TOML files
 - Environment variable overrides for sensitive data
 - Structured logging to file and console
@@ -68,6 +72,7 @@ ConsensusMind is an autonomous research agent that conducts end-to-end research 
 - Hypothesis generation and persistence
 - Consensus simulation and experimentation
 - LaTeX paper generation from experiment outputs
+- CLI help/version and stable command interface
 
 ### Planned
 - Automated LaTeX paper generation
@@ -160,7 +165,7 @@ CI runs `cargo fmt --check`, `cargo clippy -- -D warnings`, and `cargo test` on 
 - [x] Milestone 6: Hypothesis Generation
 - [x] Milestone 7: Automated Experimentation
 - [x] Milestone 8: Paper Generation
-- [ ] Milestone 9: Integration & Polish
+- [x] Milestone 9: Integration & Polish
 - [ ] Milestone 10: Whitepaper & Research Paper
 
 ## License
