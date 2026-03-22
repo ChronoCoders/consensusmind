@@ -71,6 +71,10 @@ pub struct KnowledgeConfig {
     pub embedding_dims: usize,
     #[serde(default = "default_index_file")]
     pub index_file: PathBuf,
+    #[serde(default = "default_hypotheses_file")]
+    pub hypotheses_file: PathBuf,
+    #[serde(default = "default_hypotheses_limit")]
+    pub hypotheses_limit: usize,
 }
 
 impl Default for KnowledgeConfig {
@@ -80,6 +84,8 @@ impl Default for KnowledgeConfig {
             max_pdf_bytes: default_max_pdf_bytes(),
             embedding_dims: default_embedding_dims(),
             index_file: default_index_file(),
+            hypotheses_file: default_hypotheses_file(),
+            hypotheses_limit: default_hypotheses_limit(),
         }
     }
 }
@@ -157,4 +163,12 @@ fn default_agent_download_limit() -> usize {
 
 fn default_agent_top_k() -> usize {
     5
+}
+
+fn default_hypotheses_file() -> PathBuf {
+    PathBuf::from("data/hypotheses.json")
+}
+
+fn default_hypotheses_limit() -> usize {
+    200
 }

@@ -85,6 +85,17 @@ async fn main() -> Result<()> {
             println!("Report saved to {}", report.path.display());
             return Ok(());
         }
+        Some("hypothesize") => {
+            let query = args.get(2).map(|s| s.as_str()).unwrap_or("");
+            if query.trim().is_empty() {
+                println!("Usage: consensusmind hypothesize <query>");
+                return Ok(());
+            }
+            let mut agent = Agent::new(config)?;
+            let report = agent.hypothesize(query).await?;
+            println!("Hypotheses saved to {}", report.path.display());
+            return Ok(());
+        }
         Some("simulate") => {
             let rounds = args
                 .get(2)

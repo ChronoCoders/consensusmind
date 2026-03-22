@@ -41,3 +41,28 @@ pub fn save_report(output_root: &Path, report: &AgentRunReport) -> Result<SavedR
 
     Ok(SavedReport { path })
 }
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct HypothesisReport {
+    pub query: String,
+    pub top_hits: Vec<ReportHit>,
+    pub hypotheses: Vec<crate::agent::hypothesis::Hypothesis>,
+    pub created_at: String,
+}
+
+pub fn save_hypothesis_report(
+    output_root: &Path,
+    report: &HypothesisReport,
+) -> Result<SavedReport> {
+    let reports_dir = output_root.join("reports");
+    fs::create_dir_all(&reports_dir)?;
+
+    let ts = Utc::now().format("%Y%m%dT%H%M%SZ").to_string();
+    let filename = format!("hypotheses-{}.json", ts);
+    let path = reports_dir.join(filename);
+
+    let contents = serde_json::to_string_pretty(report)?;
+    crate::utils::fs::atomic_write(&path, contents.as_bytes())?;
+
+    Ok(SavedReport { path })
+}

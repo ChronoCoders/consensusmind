@@ -1,8 +1,11 @@
+pub mod hypothesis;
+
 use crate::knowledge::arxiv::ArxivClient;
 use crate::knowledge::database::MetadataStore;
 use crate::knowledge::embedding::{build_or_update_index_from_metadata, HashingEmbedder};
 use crate::knowledge::paper_parser::PdfParser;
 use crate::llm::{LlmClient, LlmRequest};
+use crate::output::{save_hypothesis_report, HypothesisReport};
 use crate::output::{save_report, AgentRunReport, ReportHit, SavedReport};
 use crate::utils::config::Config;
 use anyhow::Result;
@@ -185,6 +188,92 @@ impl Agent {
         save_memory(&self.config.agent.memory_file, &memory)?;
 
         Ok(saved)
+    }
+
+    pub async fn hypothesize(&mut self, query: &str) -> Result<SavedReport> {
+        let timeout_seconds = self.config.agent.timeout_seconds;
+        let query = query.to_string();
+
+        let saved = timeout(Duration::from_secs(timeout_seconds), async {
+            self.hypothesize_inner(&query).await
+        })
+        .await??;
+
+        Ok(saved)
+    }
+
+    async fn hypothesize_inner(&mut self, query: &str) -> Result<SavedReport> {
+        let max_results = (self.config.agent.max_iterations as usize).clamp(1, 10);
+        let download_limit = self.config.agent.download_limit;
+        let top_k = self.config.agent.top_k;
+
+        let papers = self
+            .arxiv
+            .search_and_store(query, max_results, 0, &mut self.metadata_store)
+            .await?;
+
+        for paper in papers.iter().take(download_limit) {
+            let result = self
+                .arxiv
+                .download_pdf(
+                    paper,
+                    &self.config.paths.papers,
+                    Some(&mut self.metadata_store),
+                )
+                .await;
+
+            if let Err(e) = result {
+                warn!("PDF download failed: {}", e);
+            }
+        }
+
+        let index = build_or_update_index_from_metadata(
+            &self.config.knowledge.index_file,
+            self.config.knowledge.embedding_dims,
+            &self.metadata_store,
+            &self.pdf_parser,
+        )?;
+
+        let embedder = HashingEmbedder::new(index.dims);
+        let q = embedder.embed(query);
+        let hits = index.search(&q, top_k);
+
+        let hypotheses = hypothesis::generate_hypotheses(
+            &self.llm,
+            hypothesis::HypothesisGenConfig {
+                max_tokens: self.config.llm.max_tokens,
+                temperature: self.config.llm.temperature,
+                top_n: top_k,
+            },
+            query,
+            &hits,
+            &self.metadata_store,
+            &index,
+        )
+        .await?;
+
+        hypothesis::append_hypotheses(
+            &self.config.knowledge.hypotheses_file,
+            self.config.knowledge.hypotheses_limit,
+            &hypotheses,
+        )?;
+
+        let report = HypothesisReport {
+            query: query.to_string(),
+            top_hits: hits
+                .into_iter()
+                .map(|h| ReportHit {
+                    id: h.id,
+                    title: h.title,
+                    source_path: h.source_path,
+                    score: h.score,
+                })
+                .collect(),
+            hypotheses,
+            created_at: Utc::now().to_rfc3339(),
+        };
+
+        save_hypothesis_report(&self.config.paths.output, &report)
     }
 
     async fn run_inner(&mut self, query: &str) -> Result<(AgentRunReport, AgentRunMemory)> {
