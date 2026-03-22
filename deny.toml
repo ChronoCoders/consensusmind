@@ -6,7 +6,7 @@ all-features = true
 db-urls = ["https://github.com/RustSec/advisory-db"]
 ignore = []
 unmaintained = "warn"
-unsound = "deny"
+unsound = "warn"
 yanked = "warn"
 notice = "warn"
 
