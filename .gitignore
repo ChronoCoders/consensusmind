@@ -8,3 +8,25 @@ Cargo.lock
 # Configuration with secrets 
 config.local.toml 
 .env 
+.env.*
+
+*.exe
+*.pdb
+
+/.vscode/
+/.idea/
+*.iml
+.DS_Store
+Thumbs.db
+
+/data/papers/*.pdf
+/data/embeddings/*.bin
+/data/experiments/*
+!/data/papers/.gitkeep
+!/data/embeddings/.gitkeep
+!/data/experiments/.gitkeep
+
+/output/papers/*
+/output/reports/*
+!/output/papers/.gitkeep
+!/output/reports/.gitkeep

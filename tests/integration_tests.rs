@@ -35,7 +35,8 @@ async fn test_llm_request_creation() {
 
 #[tokio::test]
 async fn test_arxiv_client_creation() -> Result<()> {
-    let _client = ArxivClient::new()?;
+    let config = Config::load()?;
+    let _client = ArxivClient::new_with_max_pdf_bytes(config.knowledge.max_pdf_bytes)?;
     Ok(())
 }
 

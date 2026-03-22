@@ -7,6 +7,8 @@ use std::fs;
 use std::path::PathBuf;
 use tracing::{debug, info};
 
+use crate::utils::fs::atomic_write;
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PaperMetadata {
     pub arxiv_id: String,
@@ -135,12 +137,8 @@ impl MetadataStore {
     }
 
     fn save(&self) -> Result<()> {
-        if let Some(parent) = self.metadata_path.parent() {
-            fs::create_dir_all(parent)?;
-        }
-
         let contents = serde_json::to_string_pretty(&self.papers)?;
-        fs::write(&self.metadata_path, contents)?;
+        atomic_write(&self.metadata_path, contents.as_bytes())?;
         debug!("Saved metadata for {} papers", self.papers.len());
         Ok(())
     }

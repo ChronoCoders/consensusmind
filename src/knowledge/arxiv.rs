@@ -8,6 +8,7 @@ use std::fs;
 use std::path::Path;
 use std::time::Duration;
 use thiserror::Error;
+use tokio::io::AsyncWriteExt;
 use tokio::time::sleep;
 use tracing::{debug, info, warn};
 
@@ -50,16 +51,22 @@ pub struct ArxivClient {
     client: Client,
     base_url: String,
     rate_limit_delay: Duration,
+    max_pdf_bytes: u64,
 }
 
 impl ArxivClient {
     pub fn new() -> Result<Self> {
+        Self::new_with_max_pdf_bytes(100 * 1024 * 1024)
+    }
+
+    pub fn new_with_max_pdf_bytes(max_pdf_bytes: u64) -> Result<Self> {
         let client = Client::builder().timeout(Duration::from_secs(30)).build()?;
 
         Ok(Self {
             client,
             base_url: "https://export.arxiv.org/api/query".to_string(),
             rate_limit_delay: Duration::from_secs(3),
+            max_pdf_bytes,
         })
     }
 
@@ -114,6 +121,7 @@ impl ArxivClient {
         let arxiv_id = paper.id.split('/').next_back().unwrap_or(&paper.id);
         let filename = format!("{}.pdf", arxiv_id.replace(':', "_"));
         let filepath = output_dir.join(&filename);
+        let temp_filepath = output_dir.join(format!("{}.part", filename));
 
         if filepath.exists() {
             info!("PDF already exists: {}", filepath.display());
@@ -126,7 +134,7 @@ impl ArxivClient {
             filepath.display()
         );
 
-        let response = self.client.get(&paper.pdf_url).send().await?;
+        let mut response = self.client.get(&paper.pdf_url).send().await?;
 
         if !response.status().is_success() {
             return Err(ArxivError::DownloadFailed(format!(
@@ -136,10 +144,37 @@ impl ArxivClient {
             )));
         }
 
-        let bytes = response.bytes().await?;
-        fs::write(&filepath, &bytes)?;
+        if let Some(content_length) = response.content_length() {
+            if content_length > self.max_pdf_bytes {
+                return Err(ArxivError::DownloadFailed(format!(
+                    "PDF too large ({} bytes): {}",
+                    content_length, paper.pdf_url
+                )));
+            }
+        }
 
-        let file_size = bytes.len() as u64;
+        let mut file = tokio::fs::File::create(&temp_filepath).await?;
+        let mut downloaded: u64 = 0;
+
+        while let Some(chunk) = response.chunk().await? {
+            downloaded = downloaded.saturating_add(chunk.len() as u64);
+            if downloaded > self.max_pdf_bytes {
+                drop(file);
+                let _ = tokio::fs::remove_file(&temp_filepath).await;
+                return Err(ArxivError::DownloadFailed(format!(
+                    "PDF exceeded max size ({} bytes): {}",
+                    self.max_pdf_bytes, paper.pdf_url
+                )));
+            }
+            file.write_all(&chunk).await?;
+        }
+
+        file.sync_all().await?;
+        drop(file);
+
+        fs::rename(&temp_filepath, &filepath)?;
+
+        let file_size = downloaded;
         let filepath_str = filepath.to_string_lossy().to_string();
 
         info!(
