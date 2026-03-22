@@ -178,11 +178,12 @@
             <div class="container">
                 <h2 class="section-title">Core Capabilities</h2>
                 <div class="features-grid">
-                    <div class="feature"><h3>Autonomous Literature Review</h3><p>Automatically searches arXiv and academic databases with semantic search. Full PDF text extraction and metadata tracking for comprehensive knowledge base.</p></div>
-                    <div class="feature"><h3>Protocol Implementation</h3><p>Real consensus protocol implementations in Rust. Network simulation with Byzantine fault injection and production-grade testing framework.</p></div>
-                    <div class="feature"><h3>Research Synthesis</h3><p>LLM-powered analysis generates structured research reports with proper citations, methodology, and experimental validation.</p></div>
-                    <div class="feature"><h3>Hypothesis Generation</h3><p>Proposes novel consensus mechanism variations through systematic analysis of existing protocols and automated parameter exploration.</p></div>
-                    <div class="feature"><h3>LaTeX Paper Generation</h3><p>Automated academic paper generation with BibTeX citations, figures, tables, and experimental results ready for submission.</p></div>
+                    <div class="feature"><h3>Paper Ingestion</h3><p>Searches arXiv, downloads PDFs, extracts text, and tracks metadata locally for a reproducible paper corpus.</p></div>
+                    <div class="feature"><h3>Semantic Search</h3><p>Builds a local embedding index and supports semantic search over the paper corpus.</p></div>
+                    <div class="feature"><h3>Agent Runner</h3><p>Runs an end-to-end pipeline (search → download → index → retrieve → summarize) and saves structured JSON reports.</p></div>
+                    <div class="feature"><h3>Hypothesis Generation</h3><p>LLM-driven hypothesis generation with novelty scoring and persistent storage.</p></div>
+                    <div class="feature"><h3>Experiments</h3><p>Runs reproducible simulation sweeps (leader baseline + Raft-style) and saves results under data/experiments.</p></div>
+                    <div class="feature"><h3>Paper Outputs</h3><p>Generates LaTeX research papers and Markdown whitepapers from hypotheses and experiment results.</p></div>
                     <div class="feature"><h3>Production Quality</h3><p>Zero compiler warnings. Zero dead code. Comprehensive testing. Built for reliability, not prototypes.</p></div>
                 </div>
             </div>
@@ -206,12 +207,11 @@
                         <h3>Research Methodology</h3>
                         <ul>
                             <li>Systematic literature search via arXiv API</li>
-                            <li>Automated protocol specification extraction</li>
-                            <li>Vector embeddings for semantic similarity</li>
-                            <li>Simulation-based validation with metrics</li>
-                            <li>Formal verification of security properties</li>
-                            <li>Open source peer review via GitHub</li>
-                            <li>Reproducible research artifacts</li>
+                            <li>Local semantic retrieval over extracted text</li>
+                            <li>Reproducible simulations (parameter sweeps + seeds)</li>
+                            <li>Structured JSON artifacts (metadata, hypotheses, experiments)</li>
+                            <li>Automated reports, LaTeX papers, and Markdown whitepapers</li>
+                            <li>Open source workflows and CI checks</li>
                         </ul>
                     </div>
                 </div>
@@ -224,7 +224,7 @@
                     <div class="tech-item"><h4>Rust 2021</h4><p>Production-grade core</p></div>
                     <div class="tech-item"><h4>Self-hosted vLLM</h4><p>LLM reasoning layer</p></div>
                     <div class="tech-item"><h4>arXiv API</h4><p>Academic paper search</p></div>
-                    <div class="tech-item"><h4>SQLite + Vector DB</h4><p>Knowledge storage</p></div>
+                    <div class="tech-item"><h4>JSON + Local Files</h4><p>Metadata, hypotheses, experiments</p></div>
                     <div class="tech-item"><h4>Tokio Async</h4><p>Async runtime</p></div>
                     <div class="tech-item"><h4>LaTeX</h4><p>Paper generation</p></div>
                     <div class="tech-item"><h4>PDF Extract</h4><p>Text extraction</p></div>
@@ -236,9 +236,9 @@
             <div class="container">
                 <h2 class="section-title">Project Status</h2>
                 <div class="features-grid">
-                    <div class="feature"><h3>Current Version</h3><p>v0.2.0 - Milestone 2 Complete. arXiv integration operational. PDF download and text extraction working. Metadata tracking implemented.</p></div>
-                    <div class="feature"><h3>Active Development</h3><p>Milestone 3 in progress: Vector embeddings and semantic search over paper corpus. Daily development sessions ongoing.</p></div>
-                    <div class="feature"><h3>Roadmap</h3><p>10 milestones total. 2 complete, 8 remaining. Target completion: Q1 2026. Research paper for ORCID submission planned.</p></div>
+                    <div class="feature"><h3>Current Version</h3><p>v0.10.0 - Milestones 1–10 complete. CLI supports run/hypothesize/experiment and paper/whitepaper generation.</p></div>
+                    <div class="feature"><h3>Scope</h3><p>Local-first research tooling: arXiv ingestion, semantic search, hypothesis generation, simulations, experiments, and generated outputs.</p></div>
+                    <div class="feature"><h3>Next</h3><p>Future work: richer protocol models, improved retrieval quality, and extended paper formatting and figures.</p></div>
                 </div>
             </div>
         </section>
@@ -342,12 +342,12 @@
         <section id="waitlist" class="waitlist-section">
             <div class="container">
                 <h2 class="section-title">Coming Soon - Join the Waitlist</h2>
-                <p class="waitlist-intro">ConsensusMind Cloud launches Q1 2026. Sign up for early access, exclusive founder pricing, and be the first to experience autonomous blockchain research.</p>
+                <p class="waitlist-intro">Cloud hosting and authentication are planned. This repository provides the full open-source CLI and local-first workflow.</p>
                 <form class="waitlist-form" action="#" method="POST">
                     <input type="email" name="email" placeholder="Enter your email" required>
                     <button type="submit" class="cta cta-primary">Join Waitlist</button>
                 </form>
-                <p style="text-align: center; margin-top: 32px; font-size: 14px; opacity: 0.7;">Early access includes: GitHub OAuth, Google Sign-In, and Email authentication</p>
+                <p style="text-align: center; margin-top: 32px; font-size: 14px; opacity: 0.7;">Planned: optional authentication for a hosted offering.</p>
             </div>
         </section>
     </main>
@@ -392,7 +392,7 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2025 Distributed Systems Labs, LLC. Open source under Apache 2.0 License.</p>
+                <p>&copy; 2026 Distributed Systems Labs, LLC. Open source under Apache 2.0 License.</p>
             </div>
         </div>
     </footer>
