@@ -8,7 +8,7 @@ ConsensusMind is an autonomous research agent that conducts end-to-end research 
 
 ## Status
 
-**Current Version:** 0.7.0 - Milestone 7 Complete
+**Current Version:** 0.8.0 - Milestone 8 Complete
 
 ### Completed Milestones
 
@@ -47,9 +47,12 @@ ConsensusMind is an autonomous research agent that conducts end-to-end research 
 - Experiment runner tied to hypothesis IDs
 - Results saved under data/experiments and summarized into output reports
 
+#### Milestone 8: Paper Generation
+- LaTeX paper generation from hypotheses and experiment results
+
 ## Features
 
-### Current (v0.7.0)
+### Current (v0.8.0)
 - Configuration management from TOML files
 - Environment variable overrides for sensitive data
 - Structured logging to file and console
@@ -64,6 +67,7 @@ ConsensusMind is an autonomous research agent that conducts end-to-end research 
 - Agent run pipeline (search, download, index, retrieve, summarize, report)
 - Hypothesis generation and persistence
 - Consensus simulation and experimentation
+- LaTeX paper generation from experiment outputs
 
 ### Planned
 - Automated LaTeX paper generation
@@ -126,6 +130,7 @@ Additional settings:
 consensusmind run "<query>"
 consensusmind hypothesize "<query>"
 consensusmind experiment <hypothesis-id> [--seeds N] [--ticks T] [--nodes N]
+consensusmind paper <hypothesis-id>
 consensusmind index
 consensusmind semantic-search "<query>" [top_k]
 consensusmind simulate [rounds] [leader_failure_prob] [seed]
@@ -154,7 +159,7 @@ CI runs `cargo fmt --check`, `cargo clippy -- -D warnings`, and `cargo test` on 
 - [x] Milestone 5: Consensus Simulator
 - [x] Milestone 6: Hypothesis Generation
 - [x] Milestone 7: Automated Experimentation
-- [ ] Milestone 8: Paper Generation
+- [x] Milestone 8: Paper Generation
 - [ ] Milestone 9: Integration & Polish
 - [ ] Milestone 10: Whitepaper & Research Paper
 

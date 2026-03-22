@@ -228,6 +228,17 @@ impl Agent {
         save_experiment_report(&self.config.paths.output, &report)
     }
 
+    pub fn paper(&self, hypothesis_id: &str) -> Result<crate::output::paper::SavedPaper> {
+        let hypothesis =
+            experiment::find_hypothesis(&self.config.knowledge.hypotheses_file, hypothesis_id)?;
+        let run = crate::output::paper::load_experiment_results(
+            &self.config.paths.experiments,
+            hypothesis_id,
+        )?;
+        let store = MetadataStore::new(self.config.knowledge.metadata_file.clone())?;
+        crate::output::paper::write_paper_tex(&self.config.paths.output, &hypothesis, &run, &store)
+    }
+
     async fn hypothesize_inner(&mut self, query: &str) -> Result<SavedReport> {
         let max_results = (self.config.agent.max_iterations as usize).clamp(1, 10);
         let download_limit = self.config.agent.download_limit;

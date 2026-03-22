@@ -146,6 +146,17 @@ async fn main() -> Result<()> {
             println!("Experiment report saved to {}", report.path.display());
             return Ok(());
         }
+        Some("paper") => {
+            let hypothesis_id = args.get(2).map(|s| s.as_str()).unwrap_or("");
+            if hypothesis_id.trim().is_empty() {
+                println!("Usage: consensusmind paper <hypothesis-id>");
+                return Ok(());
+            }
+            let agent = Agent::new(config)?;
+            let paper = agent.paper(hypothesis_id)?;
+            println!("Paper TeX saved to {}", paper.tex_path.display());
+            return Ok(());
+        }
         Some("simulate") => {
             let rounds = args
                 .get(2)
