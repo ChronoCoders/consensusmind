@@ -5,10 +5,9 @@ all-features = true
 [advisories]
 db-urls = ["https://github.com/RustSec/advisory-db"]
 ignore = []
-unmaintained = "warn"
-unsound = "warn"
+unmaintained = "workspace"
+unsound = "workspace"
 yanked = "warn"
-notice = "warn"
 
 [licenses]
 allow = ["Apache-2.0", "MIT", "BSD-2-Clause", "BSD-3-Clause", "ISC", "Zlib", "Unicode-3.0", "CC0-1.0"]
