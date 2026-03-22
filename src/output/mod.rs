@@ -5,6 +5,7 @@ use std::fs;
 use std::path::{Path, PathBuf};
 
 pub mod paper;
+pub mod whitepaper;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AgentRunReport {

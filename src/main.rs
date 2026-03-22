@@ -19,6 +19,8 @@ fn print_usage() {
     println!("  consensusmind hypothesize \"<query>\"");
     println!("  consensusmind experiment <hypothesis-id> [--seeds N] [--ticks T] [--nodes N]");
     println!("  consensusmind paper <hypothesis-id>");
+    println!("  consensusmind whitepaper <hypothesis-id>");
+    println!("  consensusmind publish <hypothesis-id>");
     println!("  consensusmind index");
     println!("  consensusmind semantic-search \"<query>\" [top_k]");
     println!("  consensusmind simulate [rounds] [leader_failure_prob] [seed]");
@@ -183,6 +185,29 @@ async fn main() -> Result<()> {
             let agent = Agent::new(config)?;
             let paper = agent.paper(hypothesis_id)?;
             println!("Paper TeX saved to {}", paper.tex_path.display());
+            return Ok(());
+        }
+        Some("whitepaper") => {
+            let hypothesis_id = args.get(2).map(|s| s.as_str()).unwrap_or("");
+            if hypothesis_id.trim().is_empty() {
+                println!("Usage: consensusmind whitepaper <hypothesis-id>");
+                return Ok(());
+            }
+            let agent = Agent::new(config)?;
+            let whitepaper = agent.whitepaper(hypothesis_id)?;
+            println!("Whitepaper saved to {}", whitepaper.md_path.display());
+            return Ok(());
+        }
+        Some("publish") => {
+            let hypothesis_id = args.get(2).map(|s| s.as_str()).unwrap_or("");
+            if hypothesis_id.trim().is_empty() {
+                println!("Usage: consensusmind publish <hypothesis-id>");
+                return Ok(());
+            }
+            let agent = Agent::new(config)?;
+            let (paper, whitepaper) = agent.publish(hypothesis_id)?;
+            println!("Paper TeX saved to {}", paper.tex_path.display());
+            println!("Whitepaper saved to {}", whitepaper.md_path.display());
             return Ok(());
         }
         Some("simulate") => {

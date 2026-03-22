@@ -239,6 +239,37 @@ impl Agent {
         crate::output::paper::write_paper_tex(&self.config.paths.output, &hypothesis, &run, &store)
     }
 
+    pub fn whitepaper(
+        &self,
+        hypothesis_id: &str,
+    ) -> Result<crate::output::whitepaper::SavedWhitepaper> {
+        let hypothesis =
+            experiment::find_hypothesis(&self.config.knowledge.hypotheses_file, hypothesis_id)?;
+        let run = crate::output::whitepaper::load_experiment_results(
+            &self.config.paths.experiments,
+            hypothesis_id,
+        )?;
+        let store = MetadataStore::new(self.config.knowledge.metadata_file.clone())?;
+        crate::output::whitepaper::write_whitepaper_md(
+            &self.config.paths.output,
+            &hypothesis,
+            &run,
+            &store,
+        )
+    }
+
+    pub fn publish(
+        &self,
+        hypothesis_id: &str,
+    ) -> Result<(
+        crate::output::paper::SavedPaper,
+        crate::output::whitepaper::SavedWhitepaper,
+    )> {
+        let paper = self.paper(hypothesis_id)?;
+        let whitepaper = self.whitepaper(hypothesis_id)?;
+        Ok((paper, whitepaper))
+    }
+
     async fn hypothesize_inner(&mut self, query: &str) -> Result<SavedReport> {
         let max_results = (self.config.agent.max_iterations as usize).clamp(1, 10);
         let download_limit = self.config.agent.download_limit;

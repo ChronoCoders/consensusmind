@@ -8,7 +8,7 @@ ConsensusMind is an autonomous research agent that conducts end-to-end research 
 
 ## Status
 
-**Current Version:** 0.9.0 - Milestone 9 Complete
+**Current Version:** 0.10.0 - Milestone 10 Complete
 
 ### Completed Milestones
 
@@ -54,9 +54,12 @@ ConsensusMind is an autonomous research agent that conducts end-to-end research 
 - Unified CLI entrypoints (help/version and command usage)
 - Repo structure improvements for outputs and data directories
 
+#### Milestone 10: Whitepaper & Research Paper
+- Whitepaper (Markdown) and research paper (LaTeX) generation from hypotheses and experiment results
+
 ## Features
 
-### Current (v0.9.0)
+### Current (v0.10.0)
 - Configuration management from TOML files
 - Environment variable overrides for sensitive data
 - Structured logging to file and console
@@ -73,6 +76,7 @@ ConsensusMind is an autonomous research agent that conducts end-to-end research 
 - Consensus simulation and experimentation
 - LaTeX paper generation from experiment outputs
 - CLI help/version and stable command interface
+- Whitepaper + research paper publishing commands
 
 ### Planned
 - Automated LaTeX paper generation
@@ -136,13 +140,15 @@ consensusmind run "<query>"
 consensusmind hypothesize "<query>"
 consensusmind experiment <hypothesis-id> [--seeds N] [--ticks T] [--nodes N]
 consensusmind paper <hypothesis-id>
+consensusmind whitepaper <hypothesis-id>
+consensusmind publish <hypothesis-id>
 consensusmind index
 consensusmind semantic-search "<query>" [top_k]
 consensusmind simulate [rounds] [leader_failure_prob] [seed]
 consensusmind raft-simulate [nodes] [ticks] [seed]
 ```
 
-Currently initializes the system, validates configuration, and provides arXiv search and PDF download capabilities.
+Supports end-to-end research runs, hypothesis generation, experiments, and paper/whitepaper generation.
 
 ## Development
 ```bash
@@ -166,7 +172,7 @@ CI runs `cargo fmt --check`, `cargo clippy -- -D warnings`, and `cargo test` on 
 - [x] Milestone 7: Automated Experimentation
 - [x] Milestone 8: Paper Generation
 - [x] Milestone 9: Integration & Polish
-- [ ] Milestone 10: Whitepaper & Research Paper
+- [x] Milestone 10: Whitepaper & Research Paper
 
 ## License
 
