@@ -45,6 +45,14 @@ pub struct PathsConfig {
 pub struct AgentConfig {
     pub max_iterations: u32,
     pub timeout_seconds: u64,
+    #[serde(default = "default_agent_memory_file")]
+    pub memory_file: PathBuf,
+    #[serde(default = "default_agent_history_limit")]
+    pub history_limit: usize,
+    #[serde(default = "default_agent_download_limit")]
+    pub download_limit: usize,
+    #[serde(default = "default_agent_top_k")]
+    pub top_k: usize,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -133,4 +141,20 @@ fn default_index_file() -> PathBuf {
 
 fn default_max_pdf_bytes() -> u64 {
     100 * 1024 * 1024
+}
+
+fn default_agent_memory_file() -> PathBuf {
+    PathBuf::from("data/agent_memory.json")
+}
+
+fn default_agent_history_limit() -> usize {
+    50
+}
+
+fn default_agent_download_limit() -> usize {
+    3
+}
+
+fn default_agent_top_k() -> usize {
+    5
 }
