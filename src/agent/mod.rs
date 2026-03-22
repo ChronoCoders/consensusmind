@@ -1,3 +1,4 @@
+pub mod experiment;
 pub mod hypothesis;
 
 use crate::knowledge::arxiv::ArxivClient;
@@ -5,7 +6,9 @@ use crate::knowledge::database::MetadataStore;
 use crate::knowledge::embedding::{build_or_update_index_from_metadata, HashingEmbedder};
 use crate::knowledge::paper_parser::PdfParser;
 use crate::llm::{LlmClient, LlmRequest};
-use crate::output::{save_hypothesis_report, HypothesisReport};
+use crate::output::{
+    save_experiment_report, save_hypothesis_report, ExperimentReport, HypothesisReport,
+};
 use crate::output::{save_report, AgentRunReport, ReportHit, SavedReport};
 use crate::utils::config::Config;
 use anyhow::Result;
@@ -200,6 +203,29 @@ impl Agent {
         .await??;
 
         Ok(saved)
+    }
+
+    pub fn experiment(
+        &self,
+        hypothesis_id: &str,
+        overrides: experiment::ExperimentOverrides,
+    ) -> Result<SavedReport> {
+        let (hypothesis, _run, results_path) = experiment::run_experiments(
+            &self.config.paths.experiments,
+            &self.config.knowledge.hypotheses_file,
+            hypothesis_id,
+            overrides,
+        )?;
+
+        let report = ExperimentReport {
+            hypothesis_id: hypothesis.id,
+            hypothesis_title: hypothesis.title,
+            evaluation_plan: hypothesis.evaluation_plan,
+            results_path: results_path.to_string_lossy().to_string(),
+            created_at: Utc::now().to_rfc3339(),
+        };
+
+        save_experiment_report(&self.config.paths.output, &report)
     }
 
     async fn hypothesize_inner(&mut self, query: &str) -> Result<SavedReport> {

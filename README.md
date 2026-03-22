@@ -8,7 +8,7 @@ ConsensusMind is an autonomous research agent that conducts end-to-end research 
 
 ## Status
 
-**Current Version:** 0.2.0 - Milestone 2 Complete
+**Current Version:** 0.7.0 - Milestone 7 Complete
 
 ### Completed Milestones
 
@@ -28,9 +28,28 @@ ConsensusMind is an autonomous research agent that conducts end-to-end research 
 - Rate limiting and error handling
 - Search and store workflow
 
+#### Milestone 3: Knowledge Base
+- Local embedding index build/update
+- Semantic search over indexed papers
+
+#### Milestone 4: Agent Core
+- Agent runner with step tracking and persisted run memory
+- Report generation
+
+#### Milestone 5: Consensus Simulator
+- Deterministic simulators with CLI entrypoints
+
+#### Milestone 6: Hypothesis Generation
+- LLM-driven hypothesis generation with novelty scoring
+- Hypotheses persistence and reporting
+
+#### Milestone 7: Automated Experimentation
+- Experiment runner tied to hypothesis IDs
+- Results saved under data/experiments and summarized into output reports
+
 ## Features
 
-### Current (v0.2.0)
+### Current (v0.7.0)
 - Configuration management from TOML files
 - Environment variable overrides for sensitive data
 - Structured logging to file and console
@@ -41,12 +60,12 @@ ConsensusMind is an autonomous research agent that conducts end-to-end research 
 - PDF download with duplicate detection
 - Metadata persistence in JSON
 - PDF text extraction for analysis
+- Local embedding index + semantic search
+- Agent run pipeline (search, download, index, retrieve, summarize, report)
+- Hypothesis generation and persistence
+- Consensus simulation and experimentation
 
 ### Planned
-- Vector embeddings and semantic search
-- Semantic search over consensus research papers
-- Hypothesis generation for novel consensus mechanisms
-- Protocol simulation and benchmarking
 - Automated LaTeX paper generation
 
 ## Architecture
@@ -104,7 +123,13 @@ Additional settings:
 
 ## Usage
 ```bash
-consensusmind
+consensusmind run "<query>"
+consensusmind hypothesize "<query>"
+consensusmind experiment <hypothesis-id> [--seeds N] [--ticks T] [--nodes N]
+consensusmind index
+consensusmind semantic-search "<query>" [top_k]
+consensusmind simulate [rounds] [leader_failure_prob] [seed]
+consensusmind raft-simulate [nodes] [ticks] [seed]
 ```
 
 Currently initializes the system, validates configuration, and provides arXiv search and PDF download capabilities.
@@ -124,11 +149,11 @@ CI runs `cargo fmt --check`, `cargo clippy -- -D warnings`, and `cargo test` on 
 
 - [x] Milestone 1: Foundation & Infrastructure
 - [x] Milestone 2: Knowledge Ingestion
-- [ ] Milestone 3: Knowledge Base
-- [ ] Milestone 4: Agent Core
-- [ ] Milestone 5: Consensus Simulator
-- [ ] Milestone 6: Hypothesis Generation
-- [ ] Milestone 7: Automated Experimentation
+- [x] Milestone 3: Knowledge Base
+- [x] Milestone 4: Agent Core
+- [x] Milestone 5: Consensus Simulator
+- [x] Milestone 6: Hypothesis Generation
+- [x] Milestone 7: Automated Experimentation
 - [ ] Milestone 8: Paper Generation
 - [ ] Milestone 9: Integration & Polish
 - [ ] Milestone 10: Whitepaper & Research Paper

@@ -1,11 +1,13 @@
-#[derive(Debug, Clone, Copy)]
+use serde::{Deserialize, Serialize};
+
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub struct LeaderSimParams {
     pub rounds: u32,
     pub leader_failure_prob: f64,
     pub seed: u64,
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub struct LeaderSimResult {
     pub rounds: u32,
     pub committed: u32,
@@ -57,7 +59,7 @@ impl XorShift64 {
     }
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub struct RaftSimParams {
     pub nodes: usize,
     pub ticks: u64,
@@ -70,7 +72,7 @@ pub struct RaftSimParams {
     pub client_request_prob: f64,
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub struct RaftSimResult {
     pub nodes: usize,
     pub ticks: u64,

@@ -96,6 +96,56 @@ async fn main() -> Result<()> {
             println!("Hypotheses saved to {}", report.path.display());
             return Ok(());
         }
+        Some("experiment") => {
+            let hypothesis_id = args.get(2).map(|s| s.as_str()).unwrap_or("");
+            if hypothesis_id.trim().is_empty() {
+                println!("Usage: consensusmind experiment <hypothesis-id> [--seeds N] [--ticks T] [--nodes N]");
+                return Ok(());
+            }
+
+            let mut seeds: Option<usize> = None;
+            let mut ticks: Option<u64> = None;
+            let mut nodes: Option<usize> = None;
+
+            let mut i = 3usize;
+            while i < args.len() {
+                match args[i].as_str() {
+                    "--seeds" => {
+                        if let Some(v) = args.get(i + 1).and_then(|s| s.parse::<usize>().ok()) {
+                            seeds = Some(v);
+                        }
+                        i += 2;
+                    }
+                    "--ticks" => {
+                        if let Some(v) = args.get(i + 1).and_then(|s| s.parse::<u64>().ok()) {
+                            ticks = Some(v);
+                        }
+                        i += 2;
+                    }
+                    "--nodes" => {
+                        if let Some(v) = args.get(i + 1).and_then(|s| s.parse::<usize>().ok()) {
+                            nodes = Some(v);
+                        }
+                        i += 2;
+                    }
+                    _ => {
+                        i += 1;
+                    }
+                }
+            }
+
+            let agent = Agent::new(config)?;
+            let report = agent.experiment(
+                hypothesis_id,
+                consensusmind::agent::experiment::ExperimentOverrides {
+                    seeds,
+                    ticks,
+                    nodes,
+                },
+            )?;
+            println!("Experiment report saved to {}", report.path.display());
+            return Ok(());
+        }
         Some("simulate") => {
             let rounds = args
                 .get(2)
