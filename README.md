@@ -4,11 +4,13 @@ Autonomous AI researcher for blockchain consensus mechanisms.
 
 ## Overview
 
-ConsensusMind is an autonomous research agent that conducts end-to-end research on blockchain consensus protocols. It performs literature review, generates hypotheses, runs simulations, and writes academic papers.
+ConsensusMind is a local-first autonomous research toolchain for blockchain consensus protocols. It performs literature review, generates hypotheses, runs simulations/experiments, and produces publication-ready outputs (LaTeX paper + Markdown whitepaper).
 
 ## Status
 
-**Current Version:** 0.10.0 - Milestone 10 Complete
+**Current Version:** 0.10.0
+
+**Project Status:** Complete (Milestones 1–10 delivered)
 
 ### Completed Milestones
 
@@ -78,9 +80,6 @@ ConsensusMind is an autonomous research agent that conducts end-to-end research 
 - CLI help/version and stable command interface
 - Whitepaper + research paper publishing commands
 
-### Planned
-- Automated LaTeX paper generation
-
 ## Architecture
 
 Built in Rust for production reliability and performance.
@@ -146,9 +145,22 @@ consensusmind index
 consensusmind semantic-search "<query>" [top_k]
 consensusmind simulate [rounds] [leader_failure_prob] [seed]
 consensusmind raft-simulate [nodes] [ticks] [seed]
+consensusmind help
+consensusmind --version
 ```
 
 Supports end-to-end research runs, hypothesis generation, experiments, and paper/whitepaper generation.
+
+## Outputs
+
+Artifacts are written to disk so runs are reproducible and auditable:
+- `data/metadata.json`: paper metadata store
+- `data/embeddings/index.json`: local embedding index
+- `data/hypotheses.json`: generated hypotheses
+- `data/experiments/<hypothesis-id>/results.json`: experiment results
+- `output/reports/*.json`: run/hypothesis/experiment reports
+- `output/papers/*.tex`: generated LaTeX papers
+- `output/papers/*.md`: generated Markdown whitepapers
 
 ## Development
 ```bash
@@ -159,7 +171,7 @@ cargo clippy         # Lint
 cargo build --release # Build optimized
 ```
 
-CI runs `cargo fmt --check`, `cargo clippy -- -D warnings`, and `cargo test` on push/PR, plus scheduled dependency/security checks.
+This repository does not ship GitHub Actions workflows. Run the commands above locally for formatting, linting, and tests.
 
 ## Roadmap
 
